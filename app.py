@@ -22,8 +22,9 @@ def handle_message(msg):
         messages=[{'role': 'user', 'content': msg}],
         stream=True,
     )
-    for chunk in stream:
+    for chunk in stream:    
         content = chunk['message']['content']
+        # print(f"Response: {content}")
         socketio.emit('response', content)
 
 if __name__ == '__main__':

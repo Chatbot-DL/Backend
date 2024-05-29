@@ -1,10 +1,14 @@
-import ollama
+from flask import Flask
+from flask_socketio import SocketIO, send, emit
 
-stream = ollama.chat(
-    model='chatboot-game',
-    messages=[{'role': 'user', 'content': 'raconte moi une histoire des jeu video pour apprendre la sommation dans 5 lignes'}],
-    stream=True,
-)
+app = Flask(__name__)
+# app.config['SECRET_KEY'] = 'your_secret_key'
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-for chunk in stream:
-  print(chunk['message']['content'], end='', flush=True)
+@socketio.on('message')
+def handle_message(message):
+    print(f'Received message: {message}')
+    send(message, broadcast=True)
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)
