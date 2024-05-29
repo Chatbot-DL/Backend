@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Generator</title>
+    <script>
+        async function generateImage() {
+            const story = document.getElementById("story").value;
+            const response = await fetch('http://localhost:5000/generate_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({story: story})
+            });
+
+            if (response.ok) {
+                const imageBlob = await response.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+                document.getElementById("generatedImage").src = imageUrl;
+            } else {
+                const error = await response.json();
+                console.error("Failed to generate image:", error.error);
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Generate Image</h1>
+    <textarea id="story" rows="4" cols="50" placeholder="Enter your story here..."></textarea><br>
+    <button onclick="generateImage()">Generate Image</button>
+    <h2>Generated Image:</h2>
+    <img id="generatedImage" alt="Generated Image will appear here...">
+</body>
+</html>
